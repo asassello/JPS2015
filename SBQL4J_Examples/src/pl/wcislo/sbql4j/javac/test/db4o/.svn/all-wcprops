@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/!svn/ver/59/trunk/SBQL4J_Examples/src/pl/wcislo/sbql4j/javac/test/db4o
+END
+Db4oOperatorTestCase.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/!svn/ver/59/trunk/SBQL4J_Examples/src/pl/wcislo/sbql4j/javac/test/db4o/Db4oOperatorTestCase.java
+END
+Db4oSimpleTest.s4j
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/!svn/ver/59/trunk/SBQL4J_Examples/src/pl/wcislo/sbql4j/javac/test/db4o/Db4oSimpleTest.s4j
+END
+Db4oOperatorTest.s4j
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/!svn/ver/59/trunk/SBQL4J_Examples/src/pl/wcislo/sbql4j/javac/test/db4o/Db4oOperatorTest.s4j
+END
+Db4oLinqTestCase.java
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/!svn/ver/59/trunk/SBQL4J_Examples/src/pl/wcislo/sbql4j/javac/test/db4o/Db4oLinqTestCase.java
+END
+Db4oLinqTest.s4j
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/!svn/ver/59/trunk/SBQL4J_Examples/src/pl/wcislo/sbql4j/javac/test/db4o/Db4oLinqTest.s4j
+END
+Db4oIndexQueries.s4j
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/!svn/ver/59/trunk/SBQL4J_Examples/src/pl/wcislo/sbql4j/javac/test/db4o/Db4oIndexQueries.s4j
+END

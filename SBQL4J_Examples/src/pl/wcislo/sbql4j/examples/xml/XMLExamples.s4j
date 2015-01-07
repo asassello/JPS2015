@@ -1,0 +1,74 @@
+package pl.wcislo.sbql4j.examples.xml;
+
+
+import java.io.File;
+
+import java.util.*;
+
+import pl.wcislo.sbql4j.java.model.runtime.Struct;
+import pl.wcislo.sbql4j.lang.xml.XMLDataSource;
+import pl.wcislo.sbql4j.lang.xml.XMLMetadata;
+import pl.wcislo.sbql4j.lang.xml.XMLMetadata.SourceType;
+
+public class XMLExamples {
+	
+	@XMLMetadata(type=SourceType.XML_SCHEMA_FILE, value="data/books.xsd", validateXML=true)
+	public final XMLDataSource xmlSource = new XMLDataSource(new File("data/books.xml"));
+	
+//	public XMLDataSource getXmlSource() {
+//		if(xmlSource == null) {
+//			xmlSource 
+//		}
+//		return xmlSource;
+//	}
+	
+//	public XMLExamples() {
+//		getXmlSource();
+//	}
+	
+	public static void main(String[] args) {
+		XMLExamples e = new XMLExamples();
+		e.findCatalogue();
+		e.findAllBooks();
+		e.findAllBooksPrices();
+		e.findAllBooksPricesRetail();
+		e.findSumBooksPricesRetail();
+		e.findAvgBooksPricesRetail();
+	}
+	
+	public Struct findCatalogue() {
+		Struct res = #{xmlSource.catalogue};
+		System.out.println("XMLExamples.findCatalogue() res="+res );
+		return res;
+	}
+	
+	public List<Struct> findAllBooks() {
+		List<Struct> res = #{xmlSource.catalogue.book};
+		System.out.println("XMLExamples.findAllBooks() res="+res );
+		return res;
+	}
+	
+	public Object findAllBooksPrices() {
+		Object res = #{xmlSource.catalogue.book.price};
+		System.out.println("XMLExamples.findAllBooksPrices() res="+res );
+		return res;
+	}
+	
+	public Object findAllBooksPricesRetail() {
+		Object res = #{xmlSource.catalogue.book.(price where kind == "retail")};
+		System.out.println("XMLExamples.findAllBooksPricesRetail() res="+res );
+		return res;
+	}
+	
+	public Object findSumBooksPricesRetail() {
+		Object res = #{sum(xmlSource.catalogue.book.price where kind == "retail")};
+		System.out.println("XMLExamples.findSumBooksPricesRetail() res="+res );
+		return res;
+	}
+	
+	public Object findAvgBooksPricesRetail() {
+		Object res = #{avg(xmlSource.catalogue.book.price where kind == "retail")};
+		System.out.println("XMLExamples.findAvgBooksPricesRetail() res="+res );
+		return res;
+	}
+}

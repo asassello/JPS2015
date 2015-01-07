@@ -1,0 +1,12 @@
+package pl.wcislo.sbql4j.javac.test.view;
+
+public class Customer {
+    public String customerID;
+    public String companyName;
+    
+    public Customer(String customerID, String companyName) {
+        super();
+        this.customerID = customerID;
+        this.companyName = companyName;
+    }
+}
