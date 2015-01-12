@@ -8,7 +8,8 @@ import edu.pjwstk.jps.datastore.IOID;
 
 public class ComplexObject extends SBAObject implements IComplexObject {
     
-	private List<IOID> childOIDs = new ArrayList<>();
+	//private List<IOID> childOIDs = new ArrayList<IOID>();
+	private List<IOID> childOIDs = new ArrayList<IOID>();
     
     public ComplexObject(IOID oid, String name, List<IOID> OIDs) {
             super(oid, name);
@@ -21,5 +22,14 @@ public class ComplexObject extends SBAObject implements IComplexObject {
             return childOIDs;
     }
     
+    //experimentall
+	@Override
+//	public String toString() {
+//		return "ComplexObject [name=" + super.getName() + ", o=" + super.getOID().toString() + "]";
+//	}
+	
+	public String toString() {
+		return "ComplexObject [name=" + super.getName() + ", o=" + super.getOID().toString() + ", childOIDs=" + childOIDs + "]\n";
+	}
     
 }
