@@ -8,6 +8,7 @@ public class BinderResult extends SingleResult implements IBinderResult {
 	AbstractQueryResult value;
 	
 	public BinderResult(SimpleResult<String> name, AbstractQueryResult value){
+		super();
 		this.name = name;
 		this.value = value;
 	}

@@ -14,7 +14,7 @@ public class Main {
 		
 		store.loadXML(".\\data\\dane.xml");
 		System.out.println("\nWywolanie PrintObjects:\n");
-		store.PrintObjects();
+		//store.PrintObjects();
 		
 		
 		

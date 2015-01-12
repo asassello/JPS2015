@@ -12,6 +12,7 @@ import edu.pjwstk.jps.result.ISingleResult;
 public class BagResult extends CollectionResult implements IBagResult {
 
 	Collection<ISingleResult> collection;
+	private ArrayList<ISingleResult> arrayList;
 	
     public BagResult(Collection<ISingleResult> collection) {
         this.collection = collection;
@@ -42,7 +43,16 @@ public class BagResult extends CollectionResult implements IBagResult {
     public void addElements(ISingleResult elements)
     {
              
-            this.collection.add(elements);
+            //this.collection.add(elements);
+            
+
+            if(elements instanceof ISingleResult) {
+                this.arrayList.add((ISingleResult) elements);
+                this.collection = arrayList;
+        } else if(elements instanceof IBagResult) {
+                this.arrayList.addAll(((IBagResult) elements).getElements());
+                this.collection = arrayList;
+        }
     }
 	
     public String toString() {

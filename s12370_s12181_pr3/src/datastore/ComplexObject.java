@@ -7,16 +7,13 @@ import edu.pjwstk.jps.datastore.IComplexObject;
 import edu.pjwstk.jps.datastore.IOID;
 
 public class ComplexObject extends SBAObject implements IComplexObject {
-    private List<IOID> childOIDs = new ArrayList<>();
-    private String name;
-    private IOID oid;
+    
+	private List<IOID> childOIDs = new ArrayList<>();
     
     public ComplexObject(IOID oid, String name, List<IOID> OIDs) {
             super(oid, name);
             childOIDs = OIDs;
-            this.name = name;
-            this.oid = oid;
-            
+           
     }
     @Override
     public List<IOID> getChildOIDs() {
@@ -24,13 +21,5 @@ public class ComplexObject extends SBAObject implements IComplexObject {
             return childOIDs;
     }
     
-    public String getName() {
-        // TODO Auto-generated method stub
-        return name;
-}
-    public IOID getOID() {
-        // TODO Auto-generated method stub
-        return oid;
-   }
     
 }

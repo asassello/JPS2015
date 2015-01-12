@@ -10,5 +10,4 @@ public class BooleanObject extends SimpleObject<Boolean> implements IBooleanObje
           // TODO Auto-generated constructor stub
 	}
 	
-
 }
