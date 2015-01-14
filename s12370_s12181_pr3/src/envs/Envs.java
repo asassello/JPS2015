@@ -27,6 +27,10 @@ import edu.pjwstk.jps.result.IStructResult;
 public class Envs implements IENVS{
 	
 	LinkedList<IENVSFrame> stosEnvs;
+	
+	public LinkedList<IENVSFrame> getStosEnvs() {
+		return stosEnvs;
+	}
 
 	@Override
 	public void init(IOID rootOID, ISBAStore store) {
@@ -60,64 +64,72 @@ public class Envs implements IENVS{
 	@Override
 	public IBagResult bind(String name) {
 		// TODO Auto-generated method stub
-		Iterator<IENVSFrame> envsIter = this.stosEnvs.descendingIterator();
-		
+		Iterator<IENVSFrame> envsIter = stosEnvs.descendingIterator();
+		BagResult bagOfBinders = new BagResult();
 		//przegladajac kolejno ramki na stosie envs, szukamy takiej ktora ma element z etykieta jak ta ktora probujemy zbindowac 
 		//i zwracamy bag wszystkich binderow z poszukiwanym name
 		while( envsIter.hasNext() ){
-			IENVSFrame tmp = envsIter.next();
-			if(((Frame) tmp.getElements()).checkFrameForBinder(name)) 
-				return  ((Frame) tmp).returnBagOfBindersFromFrame(name);
-		}		
-		return new BagResult();
+			Frame tmp = (Frame)envsIter.next();
+			if(tmp.checkFrameForBinder(name)) {
+				bagOfBinders = (BagResult)tmp.returnBagOfBindersFromFrame(name);
+			}
+		}
+		return bagOfBinders;
 	}
 
 	@Override
 	public IENVSFrame nested(IAbstractQueryResult result, ISBAStore store) {
 		// TODO Auto-generated method stub
 		IENVSFrame newNestedFrame = new Frame();
-		
+
 		//3 podstawowe przypadki: referncje(obiekt zlozony) / binder / struct
 		if(result instanceof IReferenceResult){
+			//System.out.println("test referenced");
 			ISBAObject obFromStore = store.retrieve(((IReferenceResult) result).getOIDValue());
 			//jesli zlozony: complex - wez wszystkie elementy zbinduj: i odeslij w ramce
 			if(obFromStore instanceof IComplexObject){
-				for(IOID childOid: ((IComplexObject)obFromStore).getChildOIDs()){
+				//System.out.println("test complex");
+				for(IOID childOid: (((IComplexObject)obFromStore).getChildOIDs())){
 					ISBAObject child = store.retrieve(childOid);
 					((Frame)newNestedFrame).frameElements.add(new Binder(child.getName(),new ReferenceResult((OID) childOid)));
 				}
 			}
 			else if(obFromStore instanceof ISimpleObject){
+				//System.out.println("test simple");
 				//jesli mamy obiekt prosty: zbinduj i odeslij w ramce
 				((Frame)newNestedFrame).frameElements.add(new Binder(obFromStore.getName(),new SimpleResult(obFromStore.getOID())));
 			}
 		}
 		else if(result instanceof IBinderResult){
+			//System.out.println("test binder");
 			//jesli mamy binder odeslij taki sam binder
 			((Frame)newNestedFrame).frameElements.add(new Binder(((Binder)result).name,((Binder)result).value));
 		}
 		else if(result instanceof IStructResult){
+			//System.out.println("test struct");
 			//dla struktury nested na kazdym elemencie, a nastepnie bindery ze zwroconej ramki dodajemy do docelowej ramki
 			for(ISingleResult structEl: ((IStructResult)result).elements()){
 				IENVSFrame newFrameForStructEl = nested(structEl,store);
 				((Frame)newNestedFrame).frameElements.addAll(newFrameForStructEl.getElements());
 			}
 		}
-		
+		//System.out.println(newNestedFrame);
 		return newNestedFrame;
 	}
 	
 	public String toString(){
-		String drukuj = new String();
+		String drukujENVS = new String();
 		int i = 0;
 		
-		drukuj += "Stos ENVS:\n\n";
+		drukujENVS += "\nStos ENVS:\n\n";
 		for(IENVSFrame frame: stosEnvs){
-			drukuj += ((Frame)frame).toString(frame,i) +"\n";
+			drukujENVS += ((Frame)frame).toString(frame,i) +"\n";
 			i++;
 		}
-		drukuj += "\nKoniec stosu ENVS";
-		return drukuj;
+		drukujENVS += "\nKoniec stosu ENVS\n";
+		return drukujENVS;
 	}
+	
+	
 
 }
