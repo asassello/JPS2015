@@ -18,6 +18,11 @@ public class BagResult extends CollectionResult implements IBagResult {
         this.collection = collection;
 }
 	
+	public BagResult() {
+		// TODO Auto-generated constructor stub
+		super();
+	}
+
 	@Override
 	public Collection<ISingleResult> getElements() {
 		return collection;
