@@ -7,8 +7,10 @@ import java.util.Collection;
 
 
 
+
 import edu.pjwstk.jps.result.IAbstractQueryResult;
 import edu.pjwstk.jps.result.IBagResult;
+import edu.pjwstk.jps.result.IReferenceResult;
 import edu.pjwstk.jps.result.ISingleResult;
 
 public class BagResult extends CollectionResult implements IBagResult {
@@ -44,19 +46,29 @@ public class BagResult extends CollectionResult implements IBagResult {
     
     public void addElements(IBagResult elements)
     {    
+
     	for(ISingleResult single: elements.getElements())
             this.collection.add(single);
     }
     
-    public void addElements(ISingleResult elements)
+    public void addElements(ISingleResult element)
     {
-        if(elements instanceof ISingleResult) {
-                this.arrayList.add((ISingleResult) elements);
-                this.collection = arrayList;
-        } else if(elements instanceof IBagResult) {
-                this.arrayList.addAll(((IBagResult) elements).getElements());
-                this.collection = arrayList;
+
+        if(element instanceof ISingleResult) {
+                this.collection.add((ISingleResult) element);
         }
+        else if(element instanceof IBagResult) {
+
+        this.arrayList.addAll(((IBagResult) element).getElements());
+        this.collection = arrayList;
+        }
+    }
+    
+    public void addElements(IReferenceResult element)
+    {        	
+    	if(element instanceof IReferenceResult) {
+            this.collection.add(element);
+    }
     }
 	
     public String toString() {

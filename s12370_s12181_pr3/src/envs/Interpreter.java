@@ -65,7 +65,7 @@ public class Interpreter implements IInterpreter {
 				return ((IBagResult)res).getElements().iterator().next();
 			}
 		}
-		else if(res instanceof ISimpleResult){
+		else if(res instanceof ISingleResult){
 			return (ISingleResult) res;
 		}
 		//czy konieczne jest obs³u¿enie BinderResult przy sprawdzaniu czy obiekt wskazuje na pojedyncz¹ wartoœæ? 
@@ -74,11 +74,15 @@ public class Interpreter implements IInterpreter {
 	
 	public static IAbstractQueryResult checkIfReferenceResult(IAbstractQueryResult res, SBAStore store){
 
+		//System.out.println(res.getClass());
+		
 		if(res instanceof IReferenceResult){
 			ISBAObject tmp = store.retrieve(((IReferenceResult)res).getOIDValue());
 			
+			//System.out.println(tmp.getClass());
+			
 			if(tmp instanceof BooleanObject){
-				return new BooleanResult(((BooleanObject)tmp).getValue());
+				return new BooleanResult(((BooleanObject)tmp).getValue());				
 			}
 			else if(tmp instanceof IntegerObject){
 				return new IntegerResult(((IntegerObject)tmp).getValue());
@@ -90,8 +94,7 @@ public class Interpreter implements IInterpreter {
 				return new StringResult(((StringObject)tmp).getValue());
 			}
 			else if(tmp instanceof ComplexObject){
-				//tu nic bo jeœli Complex to nie wiadomo który z pod-obiektów mielibyœmy zwróciæ
-				//ewentualnoœæ ¿e zwrócona zostanie ten sam referenced result trzeba obs³u¿yæ w operatorze 
+				//return new CollectionResult(((ComplexObject)tmp).getChildOIDs());
 			}
 		}		
 		return res;
@@ -361,6 +364,9 @@ public class Interpreter implements IInterpreter {
 	@Override
 	public IAbstractQueryResult eval(IExpression queryTreeRoot) {
 		// TODO Auto-generated method stub
+		
+		
+		
 		return null;
 	}
 

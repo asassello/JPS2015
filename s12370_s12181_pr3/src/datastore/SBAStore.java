@@ -102,9 +102,9 @@ public class SBAStore implements ISBAStore {
 		if(el.getChildren().isEmpty() == true){
 			
 			if(!el.getText().isEmpty()){
-				if(el.getText().toLowerCase().toString() == "true" || el.getText().toLowerCase().toString() == "false" ){
+				if(el.getText().toLowerCase().toString().equals("true") || el.getText().toLowerCase().toString().equals("false") ){
 					createBool( el.getName(),Boolean.valueOf(el.getValue()),parent);
-					
+//					//System.out.println("TEST");
 				}
 				else if( NumberUtils.isNumber(el.getText()) ){
 					if( (Double.valueOf(el.getText()) % 1) != 0){

@@ -12,8 +12,9 @@ public class Main {
 	public static void PR3(){
 		
 		SBAStore store = new SBAStore(); 
-		store.loadXML(".\\data\\dane.xml");
+		//store.loadXML(".\\data\\dane.xml");
 		//store.loadXML(".\\data\\dane_do_zap_testowych.xml");
+		store.loadXML(".\\data\\jps_envs_test.xml");
 		System.out.println("\nPR3:");
 		System.out.println("Wywolanie PrintStore:\n");
 		store.PrintObject(store.retrieve(store.getEntryOID()));

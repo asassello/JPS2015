@@ -25,11 +25,11 @@ public class EnvsTest {
 		BagResult eres = new BagResult();//sumaryczny wynik union 
 		
 		BagResult eresLeft = new BagResult(); 
-		BagResult eresLeftLeft = (BagResult)stosSrod.bind("emp"); //lewa strona union: emp
+		BagResult eresLeftLeft = (BagResult) stosSrod.bind("emp"); //lewa strona union: emp
 		qres.push(eresLeftLeft);
-		eresLeftLeft = (BagResult)qres.pop();
+
 		
-		for(ISingleResult el1: eresLeftLeft.getElements()){ //dla kazdego prawego empa (prawa strona union)
+		for(ISingleResult el1: ((IBagResult) qres.pop()).getElements()){ //dla kazdego prawego empa (prawa strona union)
 			Frame tmpFr1 = (Frame)stosSrod.nested(el1, store);
 			stosSrod.push(tmpFr1);
 			
@@ -42,32 +42,34 @@ public class EnvsTest {
 				
 				//sprawdz czy ktorys jest referencja
 				eresLeftRightRight_ = Interpreter.checkIfReferenceResult(eresLeftRightRight_, store);
-				// !!! nie wiem czemu z referenced object robi String (a nie Boolean)
 				
-				//sprawdz czy mozna porownywac (porownujemy ze Stringiem w takim razie)
-				if(!(((StringResult)eresLeftRightRight_).getValue().equals("true") || ((StringResult)eresLeftRightRight_).getValue().equals("false"))) throw new RuntimeException("Non Comparable");
-				BooleanResult eresLeftRight = new BooleanResult( (eresLeftRightRight_.toString().equals((new BooleanResult(true)).getClass().toString())) ); //porownaj
+				if(!(((BooleanResult)eresLeftRightRight_).getValue().equals(true) || ((BooleanResult)eresLeftRightRight_).getValue().equals(false))) throw new RuntimeException("Non Comparable");				
+				BooleanResult eresLeftRight = new BooleanResult( ((BooleanResult)eresLeftRightRight_).getValue().equals(true) ); //porownaj
 				qres.push(eresLeftRight);
 				IAbstractQueryResult eresLeftRight_ = qres.pop();
 				if(!(eresLeftRight_ instanceof BooleanResult)) throw new RuntimeException("Non logical value"); //czy wynik porownania bool
-				if(eresLeftRight_.equals(true)) eresLeft.addElements(el1); //jesli true dodaj emp do baga wynika prawego zapytania
+				if(((BooleanResult)eresLeftRight_).getValue().equals(true)) {
+					eresLeft.addElements(el1); //jesli true dodaj emp do bag (wynik prawego zapytania)
+				}
 			stosSrod.pop();
 		}
+		System.out.println("\nWynik lewego podzapytania:");
+		System.out.println(eresLeft + "\n");
 		qres.push(eresLeft);
 		
 		
 		//prawa strona union
 		BagResult eresRight = new BagResult(); 
-		BagResult eresRightLeft = (BagResult)stosSrod.bind("emp"); //prawa strona union: emp
+		BagResult eresRightLeft = (BagResult) stosSrod.bind("emp"); //prawa strona union: emp
 		qres.push(eresRightLeft);
-		eresRightLeft = (BagResult)qres.pop();
 		
-		for(ISingleResult el1: eresRightLeft.getElements()){ //dla kazdego prawego empa (prawa strona union)
-			Frame tmpFr2 = (Frame)stosSrod.nested(el1, store);
+		for(ISingleResult el2: ((IBagResult)(qres.pop())).getElements()){ //dla kazdego prawego empa (prawa strona union)
+			Frame tmpFr2 = (Frame)stosSrod.nested(el2, store);
 			stosSrod.push(tmpFr2);
 			
 				BagResult eresRightRightLeft = (BagResult)stosSrod.bind("lName"); //lewa strona ==
 				qres.push(eresRightRightLeft);
+				
 				IAbstractQueryResult eresRightRightRight = new StringResult("Nowak"); //prawa strona ==
 				qres.push(eresRightRightRight);
 
@@ -79,15 +81,20 @@ public class EnvsTest {
 				eresRightRightRight_ = Interpreter.checkIfReferenceResult(eresRightRightRight_, store);
 				eresRightRightLeft_ = Interpreter.checkIfReferenceResult(eresRightRightLeft_, store);
 				
+				
 				//sprawdz czy mozna porownywac	
 				if(eresRightRightRight_.getClass() != eresRightRightLeft_.getClass()) throw new RuntimeException("Non Comparable");
 				BooleanResult eresRightRight = new BooleanResult( (eresRightRightRight_.toString().equals(eresRightRightLeft_.toString())) ); //porownaj
 				qres.push(eresRightRight);
 				IAbstractQueryResult eresRightRight_ = qres.pop();
 				if(!(eresRightRight_ instanceof BooleanResult)) throw new RuntimeException("Non logical value"); //czy wynik porownania bool
-				if(eresRightRight_.equals(true)) eresRight.addElements(el1); //jesli true dodaj emp do baga wynika prawego zapytania
+				if(((BooleanResult)eresRightRight_).getValue().equals(true)) {
+					eresRight.addElements(el2); //jesli true dodaj emp do baga wynika prawego zapytania
+				}
 				stosSrod.pop();
 		}
+		System.out.println("\nWynik prawego podzapytania:");
+		System.out.println(eresRight + "\n");
 		qres.push(eresRight); 
 		
 		IAbstractQueryResult right = qres.pop();
@@ -96,12 +103,17 @@ public class EnvsTest {
 		//dodajemy do ostatecznego wyniku
 		eres.addElements((IBagResult)right);
 		eres.addElements((IBagResult)left);
-		//eres.getElements().add((ISingleResult) left);
 		
 		qres.push(eres);
 		
-		System.out.println(stosSrod.toString());
-		System.out.println(stosSrod.getStosEnvs().size());
+		System.out.println("\nWynik zapytania:");
+		System.out.println(qres.pop()+ "\n");
+		
+		System.out.println(store.retrieve(((ReferenceResult)eres.getElement(0)).getOIDValue()));
+		System.out.println(store.retrieve(((ReferenceResult)eres.getElement(1)).getOIDValue()));
+		
+//		System.out.println(stosSrod.toString());
+//		System.out.println(stosSrod.getStosEnvs().size());
 		
 	}
 		
