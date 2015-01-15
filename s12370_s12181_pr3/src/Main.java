@@ -3,7 +3,7 @@ import envs.EnvsTest;
 
 public class Main {
 	
-	public static void main(String[] args){
+	public static void main(String[] args) throws Exception{
 			
 		//PR3();
 		PR4();
@@ -21,7 +21,7 @@ public class Main {
 		//System.out.println(store);
 	}
 	
-	public static void PR4(){
+	public static void PR4() throws Exception{
 
 		EnvsTest tester = new EnvsTest();
 		tester.PR4_q1();

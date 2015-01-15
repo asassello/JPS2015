@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import edu.pjwstk.jps.result.ICollectionResult;
+import edu.pjwstk.jps.result.ISingleResult;
 
 public class CollectionResult extends AbstractQueryResult implements ICollectionResult {
 	

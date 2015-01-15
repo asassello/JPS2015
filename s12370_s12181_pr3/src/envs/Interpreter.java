@@ -1,5 +1,7 @@
 package envs;
 
+import qres.*;
+import datastore.*;
 import edu.pjwstk.jps.ast.IExpression;
 import edu.pjwstk.jps.ast.auxname.IAsExpression;
 import edu.pjwstk.jps.ast.auxname.IGroupAsExpression;
@@ -44,10 +46,58 @@ import edu.pjwstk.jps.ast.unary.INotExpression;
 import edu.pjwstk.jps.ast.unary.IStructExpression;
 import edu.pjwstk.jps.ast.unary.ISumExpression;
 import edu.pjwstk.jps.ast.unary.IUniqueExpression;
+import edu.pjwstk.jps.datastore.*;
 import edu.pjwstk.jps.interpreter.envs.IInterpreter;
-import edu.pjwstk.jps.result.IAbstractQueryResult;
+import edu.pjwstk.jps.result.*;
 
 public class Interpreter implements IInterpreter {
+	
+	//czy aby na pewno wartoœæ zwracana ISingleResult ?
+	public static ISingleResult checkIfSingleResult(IAbstractQueryResult res) throws Exception{
+		
+		if(res instanceof IStructResult){
+			if(((Integer)((IStructResult)res).elements().size()).equals(1)){
+				return ((IStructResult)res).elements().get(0);
+			}
+		}
+		else if(res instanceof IBagResult){
+			if(((Integer)((IBagResult)res).getElements().size()).equals(1)){
+				return ((IBagResult)res).getElements().iterator().next();
+			}
+		}
+		else if(res instanceof ISimpleResult){
+			return (ISingleResult) res;
+		}
+		//czy konieczne jest obs³u¿enie BinderResult przy sprawdzaniu czy obiekt wskazuje na pojedyncz¹ wartoœæ? 
+		throw new RuntimeException("Non SingleResult");		
+	}
+	
+	public static IAbstractQueryResult checkIfReferenceResult(IAbstractQueryResult res, SBAStore store){
+
+		if(res instanceof IReferenceResult){
+			ISBAObject tmp = store.retrieve(((IReferenceResult)res).getOIDValue());
+			
+			if(tmp instanceof BooleanObject){
+				return new BooleanResult(((BooleanObject)tmp).getValue());
+			}
+			else if(tmp instanceof IntegerObject){
+				return new IntegerResult(((IntegerObject)tmp).getValue());
+			}
+			else if(tmp instanceof DoubleObject){
+				return new DoubleResult(((DoubleObject)tmp).getValue());
+			}
+			else if(tmp instanceof StringObject){
+				return new StringResult(((StringObject)tmp).getValue());
+			}
+			else if(tmp instanceof ComplexObject){
+				//tu nic bo jeœli Complex to nie wiadomo który z pod-obiektów mielibyœmy zwróciæ
+				//ewentualnoœæ ¿e zwrócona zostanie ten sam referenced result trzeba obs³u¿yæ w operatorze 
+			}
+		}		
+		return res;
+	}
+	
+	
 
 	@Override
 	public void visitAsExpression(IAsExpression expr) {

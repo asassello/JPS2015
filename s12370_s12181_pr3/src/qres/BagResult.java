@@ -6,6 +6,8 @@ import java.util.Collection;
 
 
 
+
+import edu.pjwstk.jps.result.IAbstractQueryResult;
 import edu.pjwstk.jps.result.IBagResult;
 import edu.pjwstk.jps.result.ISingleResult;
 
@@ -38,6 +40,12 @@ public class BagResult extends CollectionResult implements IBagResult {
     public void addElements(Collection<ISingleResult> elements)
     {    
             this.collection.addAll(elements);
+    }
+    
+    public void addElements(IBagResult elements)
+    {    
+    	for(ISingleResult single: elements.getElements())
+            this.collection.add(single);
     }
     
     public void addElements(ISingleResult elements)
