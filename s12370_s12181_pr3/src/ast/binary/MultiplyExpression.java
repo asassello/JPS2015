@@ -2,6 +2,7 @@ package ast.binary;
 
 import edu.pjwstk.jps.ast.IExpression;
 import edu.pjwstk.jps.ast.binary.IMultiplyExpression;
+import edu.pjwstk.jps.visitor.ASTVisitor;
 
 public class MultiplyExpression extends BinaryExpression implements IMultiplyExpression {
 	
@@ -15,4 +16,9 @@ public class MultiplyExpression extends BinaryExpression implements IMultiplyExp
 				this.getRightExpression().toString();
 	}
 	
+	@Override
+	public void accept(ASTVisitor visitor) {
+		// TODO Auto-generated method stub
+			visitor.visitMultiplyExpression(this);
+	}
 }

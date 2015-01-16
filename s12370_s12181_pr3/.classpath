@@ -5,7 +5,7 @@
 	<classpathentry kind="lib" path="lib/jps-api_1.0.4.jar"/>
 	<classpathentry kind="lib" path="lib/jdom2-2.0.5.jar"/>
 	<classpathentry kind="lib" path="lib/jdom-1.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/user/Documents/JPS WS/commons-lang3-3.3.2-bin/commons-lang3-3.3.2/commons-lang3-3.3.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/user/Documents/JPS WS/commons-lang3-3.3.2-bin/commons-lang3-3.3.2/commons-lang3-3.3.2-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang3-3.3.2-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang3-3.3.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

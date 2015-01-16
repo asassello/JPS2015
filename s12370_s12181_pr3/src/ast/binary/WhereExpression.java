@@ -2,6 +2,7 @@ package ast.binary;
 
 import edu.pjwstk.jps.ast.IExpression;
 import edu.pjwstk.jps.ast.binary.IWhereExpression;
+import edu.pjwstk.jps.visitor.ASTVisitor;
 
 public class WhereExpression extends BinaryExpression implements IWhereExpression {
 	
@@ -17,6 +18,13 @@ public class WhereExpression extends BinaryExpression implements IWhereExpressio
 		//String rightStr  = getRightExpression() instanceof  BinaryExpression ? getRightExpression().toString(): "(" + getRightExpression().toString()  + ")";
 		return leftStr.toString() + " WHERE " +
 		rightStr.toString();
+	}
+	
+
+	@Override
+	public void accept(ASTVisitor visitor) {
+		// TODO Auto-generated method stub
+			visitor.visitWhereExpression(this);
 	}
 	
 }

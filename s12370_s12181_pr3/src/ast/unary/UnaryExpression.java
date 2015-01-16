@@ -8,6 +8,7 @@ public abstract class UnaryExpression extends Expression implements IUnaryExpres
 	IExpression innerExpr;
 	
 	public UnaryExpression(IExpression innerExpr){
+		super();
 		this.innerExpr = innerExpr;
 	};
 	

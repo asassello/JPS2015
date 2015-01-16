@@ -13,6 +13,11 @@ public class TerminalExpression<Typ> extends Expression implements ITerminalExpr
 	
 	public Typ getValue(){
 		return t;
+	}
+
+	public TerminalExpression(Typ t) {
+		super();
+		this.t = t;
 	};
 
 }

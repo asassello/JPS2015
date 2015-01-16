@@ -42,9 +42,10 @@ public class EnvsTest {
 				
 				//sprawdz czy ktorys jest referencja
 				eresLeftRightRight_ = Interpreter.checkIfReferenceResult(eresLeftRightRight_, store);
-				
+
+				//castujemy na wlasciwy wynik zeby moc pobrac wartosc do poronwania
 				if(!(((BooleanResult)eresLeftRightRight_).getValue().equals(true) || ((BooleanResult)eresLeftRightRight_).getValue().equals(false))) throw new RuntimeException("Non Comparable");				
-				BooleanResult eresLeftRight = new BooleanResult( ((BooleanResult)eresLeftRightRight_).getValue().equals(true) ); //porownaj
+				BooleanResult eresLeftRight = new BooleanResult( ((BooleanResult)eresLeftRightRight_).getValue().equals(true) ); //porownaj wartosc z obiektem true
 				qres.push(eresLeftRight);
 				IAbstractQueryResult eresLeftRight_ = qres.pop();
 				if(!(eresLeftRight_ instanceof BooleanResult)) throw new RuntimeException("Non logical value"); //czy wynik porownania bool

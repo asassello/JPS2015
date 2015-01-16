@@ -3,6 +3,7 @@ package ast.binary;
 import ast.terminal.TerminalExpression;
 import edu.pjwstk.jps.ast.IExpression;
 import edu.pjwstk.jps.ast.binary.IDotExpression;
+import edu.pjwstk.jps.visitor.ASTVisitor;
 
 public class DotExpression extends BinaryExpression implements IDotExpression {
 	
@@ -17,4 +18,9 @@ public class DotExpression extends BinaryExpression implements IDotExpression {
 		return leftStr.toString() + "." + rightStr.toString();
 	}
 	
+	@Override
+	public void accept(ASTVisitor visitor) {
+		// TODO Auto-generated method stub
+		visitor.visitDotExpression(this);
+	}
 }
