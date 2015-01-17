@@ -18,7 +18,7 @@ public class SequenceResult extends CollectionResult implements ISequenceResult 
 		}
 		return tab;
 	}
-
+	
 	public SequenceResult() {
 		super();
 		// TODO Auto-generated constructor stub

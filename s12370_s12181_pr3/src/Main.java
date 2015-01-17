@@ -25,8 +25,9 @@ public class Main {
 	public static void PR4() throws Exception{
 
 		EnvsTest tester = new EnvsTest();
-		tester.PR4_q1();
-		//tester.PR4_q2();		
+		//tester.PR4_q1();
+		//tester.PR4_q2();
+		tester.PR_test();
 	}
 
 }

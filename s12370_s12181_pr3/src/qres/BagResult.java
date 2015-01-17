@@ -8,8 +8,10 @@ import java.util.Collection;
 
 
 
+
 import edu.pjwstk.jps.result.IAbstractQueryResult;
 import edu.pjwstk.jps.result.IBagResult;
+import edu.pjwstk.jps.result.ICollectionResult;
 import edu.pjwstk.jps.result.IReferenceResult;
 import edu.pjwstk.jps.result.ISingleResult;
 
@@ -68,7 +70,27 @@ public class BagResult extends CollectionResult implements IBagResult {
     {        	
     	if(element instanceof IReferenceResult) {
             this.collection.add(element);
+    	}
     }
+    	
+    public void addElements(IAbstractQueryResult element){	
+    	
+    	if(element instanceof IReferenceResult) {
+            this.collection.add((ISingleResult) element);
+    	}
+    	if(element instanceof ISingleResult) {
+            this.collection.add((ISingleResult) element);
+	    }
+	    else if(element instanceof IBagResult) {
+	
+	    this.arrayList.addAll(((IBagResult) element).getElements());
+	    this.collection = arrayList;
+	    }
+	    else if(element instanceof ICollectionResult) {
+	    	this.collection.addAll((Collection<? extends ISingleResult>) element);
+	    }
+	    else throw new RuntimeException("Unable to add element to result!");
+    	
     }
 	
     public String toString() {

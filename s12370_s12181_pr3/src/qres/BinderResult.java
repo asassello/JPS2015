@@ -4,10 +4,10 @@ import edu.pjwstk.jps.result.IBinderResult;
 
 public class BinderResult extends SingleResult implements IBinderResult {
 
-	SimpleResult<String> name;
+	String name;
 	AbstractQueryResult value;
 	
-	public BinderResult(SimpleResult<String> name, AbstractQueryResult value){
+	public BinderResult(String name, AbstractQueryResult value){
 		super();
 		this.name = name;
 		this.value = value;

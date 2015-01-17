@@ -6,6 +6,7 @@ import datastore.SBAStore;
 import edu.pjwstk.jps.result.IAbstractQueryResult;
 import edu.pjwstk.jps.result.IBagResult;
 import edu.pjwstk.jps.result.IReferenceResult;
+import edu.pjwstk.jps.result.ISimpleResult;
 import edu.pjwstk.jps.result.ISingleResult;
 import qres.*;
 
@@ -120,6 +121,24 @@ public class EnvsTest {
 		
 	public static void PR4_q2(){
 		//((emp where exists address) where address.number>20).(street, city)
+	}
+	
+	public static void PR_test(){
+		
+//		IntegerResult left = new IntegerResult(1);
+//		DoubleResult right = new DoubleResult(2.5);
+//		SimpleResult res = new DoubleResult( ((Number)((ISimpleResult)left).getValue()).doubleValue() + ((Number)((ISimpleResult)right).getValue()).doubleValue() );
+//		System.out.println(res);
+		
+//		StringResult left = new StringResult("test");
+//		StringResult right = new StringResult("test");
+//		BooleanResult res = new BooleanResult( ((ISimpleResult)left).getValue().toString().equals(((ISimpleResult)right).getValue().toString()) );
+//		System.out.println(res);
+		
+		BooleanResult left = new BooleanResult(false);
+		BooleanResult right = new BooleanResult(true);
+		BooleanResult res = new BooleanResult( ((BooleanResult)left).getValue() == ((BooleanResult)right).getValue()) ;
+		System.out.println(res);
 	}
 	
 }

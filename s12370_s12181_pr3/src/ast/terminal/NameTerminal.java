@@ -2,23 +2,21 @@ package ast.terminal;
 
 import ast.Expression;
 import edu.pjwstk.jps.ast.terminal.INameTerminal;
+import ast.terminal.TerminalExpression;
 import edu.pjwstk.jps.visitor.ASTVisitor;
 
-public class NameTerminal extends Expression  implements INameTerminal  {
-	
-	private String name;
+public class NameTerminal extends TerminalExpression<String>  implements INameTerminal  {
 
 	public NameTerminal(String t){
-		super();
-		this.name = t;
+		super(t);
 	};
 	
 	public String getName(){
-		return name;
+		return super.getValue();
 	};
 	
 	public String toString(){
-		return name;
+		return super.getValue();
 	};
 	
 	@Override
