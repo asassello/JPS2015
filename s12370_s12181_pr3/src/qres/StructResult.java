@@ -3,6 +3,8 @@ package qres;
 import java.util.ArrayList;
 import java.util.List;
 
+import datastore.SimpleObject;
+import edu.pjwstk.jps.datastore.ISBAStore;
 import edu.pjwstk.jps.result.ISingleResult;
 import edu.pjwstk.jps.result.IStructResult;
 
@@ -55,16 +57,29 @@ public class StructResult  extends SingleResult implements IStructResult, Compar
 		return 0;
 	}
 
-	public int compareTo(StructResult o) {
+	public int compareTo(StructResult o, ISBAStore store) {
 		// TODO Auto-generated method stub
 		int result = 0; //jeœli równe
-		for(int i = 1; i<((List<ISingleResult>) o).size(); i++)
-		{
-			result = ((StructResult) list.get(i)).compareTo(o.list.get(i));
+		
+		for(int i = 1; i <((StructResult)o).elements().size(); i++){
+
+			result = ((SimpleObject)store.retrieve(((ReferenceResult)list.get(i)).getOIDValue())).compareTo(
+					(SimpleObject)(store.retrieve(((ReferenceResult)o.list.get(i)).getOIDValue())));
 			if(result != 0) //jeœli nierówne
 				return result;
 		}
+		
 		return result;
 	}
-
+	
+	//order_by_structure printing (or join)
+	public String print(ISBAStore store) {
+	  
+		String tmp = "struct(";
+		for(ISingleResult el: this.getElements()){
+			tmp += (store.retrieve(((ReferenceResult)el).getOIDValue())).toString() + ", ";
+		}
+		tmp = tmp.substring(0, tmp.length()-1);
+		return tmp;
+	}
 }

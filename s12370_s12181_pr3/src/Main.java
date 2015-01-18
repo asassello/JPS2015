@@ -25,9 +25,24 @@ public class Main {
 	public static void PR4() throws Exception{
 
 		EnvsTest tester = new EnvsTest();
-		//tester.PR4_q1();
-		//tester.PR4_q2();
-		tester.PR_test();
+//		tester.PR4_q1();
+//		tester.PR4_q2();
+//		tester.PR_test();
+//		tester.test_string();
+//		tester.testOrderByExpression();
+//		tester.testExistsExpression();
+//		tester.testDotExpression();
+//		tester.testEqualsExpression();
+//		tester.testWhereExpression();
+//		tester.testSumExpression();
+//		testertestMinExpression();
+//		tester.testMaxExpression();
+//		tester.testNotExpression();
+//		tester.testUniqueExpression();
+//		tester.testCountExpression();
+//		tester.testJoinExpression();
+		tester.testSelectExpression();
+//		tester.testWhere2Expression();
 	}
 
 }

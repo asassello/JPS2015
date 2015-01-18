@@ -9,6 +9,8 @@ import java.util.Collection;
 
 
 
+
+import edu.pjwstk.jps.datastore.ISBAStore;
 import edu.pjwstk.jps.result.IAbstractQueryResult;
 import edu.pjwstk.jps.result.IBagResult;
 import edu.pjwstk.jps.result.ICollectionResult;
@@ -78,13 +80,18 @@ public class BagResult extends CollectionResult implements IBagResult {
     	if(element instanceof IReferenceResult) {
             this.collection.add((ISingleResult) element);
     	}
-    	if(element instanceof ISingleResult) {
+    	else if(element instanceof ISingleResult) {
             this.collection.add((ISingleResult) element);
 	    }
 	    else if(element instanceof IBagResult) {
-	
-	    this.arrayList.addAll(((IBagResult) element).getElements());
-	    this.collection = arrayList;
+	    	
+	    	if(((IBagResult) element).getElements().iterator().next() instanceof IReferenceResult ){
+	    		this.getElements().addAll(((Collection<ISingleResult>)((IBagResult) element).getElements()));
+	    	}
+	    	else {
+	    		this.arrayList.addAll( ((IBagResult) element).getElements());
+	    		this.collection = arrayList;
+	    	}
 	    }
 	    else if(element instanceof ICollectionResult) {
 	    	this.collection.addAll((Collection<? extends ISingleResult>) element);
@@ -96,5 +103,14 @@ public class BagResult extends CollectionResult implements IBagResult {
     public String toString() {
     	return "bag(" + collection + ")";
     }
+    
+	public String printBagOfReferenced(ISBAStore store) {
+		  
+		String tmp = "Bag:";
+		for(ISingleResult el: this.getElements()){
+			tmp += (store.retrieve(((ReferenceResult)el).getOIDValue())).toString();
+		}
+		return tmp;
+	}
 
 }

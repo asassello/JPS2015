@@ -22,6 +22,19 @@ public class SimpleObject<T> extends SBAObject implements ISimpleObject<T> {
 		// TODO Auto-generated method stub
 		return value;
 	}
+
+	public int compareTo(SimpleObject simpleObject) {
+		// TODO Auto-generated method stub
+		if (simpleObject.value instanceof String)
+			return ((String)value).compareTo((String)simpleObject.value);
+		if (simpleObject.value instanceof Integer)
+			return ((Integer)value).compareTo((Integer)simpleObject.value);
+		if (simpleObject.value instanceof Double)
+			return ((Double)value).compareTo((Double)simpleObject.value);
+		if (simpleObject.value instanceof Boolean)
+			return ((Boolean)value).compareTo((Boolean)simpleObject.value);
+		else return 0;
+	}
 	
 
 }

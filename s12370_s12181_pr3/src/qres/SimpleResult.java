@@ -22,4 +22,9 @@ public class SimpleResult<T>  extends SingleResult implements ISimpleResult<T> {
 	public String toString(){
 		return t.toString();
 	}
+
+	public int compareTo(SimpleResult simpleResult) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
