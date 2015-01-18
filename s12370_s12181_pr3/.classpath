@@ -7,5 +7,8 @@
 	<classpathentry kind="lib" path="lib/jdom-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang3-3.3.2-javadoc.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang3-3.3.2.jar"/>
+	<classpathentry kind="lib" path="lib/ant.jar"/>
+	<classpathentry kind="lib" path="lib/java-cup-11a.jar"/>
+	<classpathentry kind="lib" path="lib/jflex-1.4.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

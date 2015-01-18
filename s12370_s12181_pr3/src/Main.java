@@ -6,7 +6,8 @@ public class Main {
 	public static void main(String[] args) throws Exception{
 			
 		//PR3();
-		PR4();
+		//PR4();
+		FULL();
 	}
 	
 	public static void PR3(){
@@ -41,7 +42,7 @@ public class Main {
 //		tester.testUniqueExpression();
 //		tester.testCountExpression();
 //		tester.testJoinExpression();
-//		tester.testSelectExpression();
+		tester.testSelectExpression();
 //		tester.testWhere2Expression();
 //		tester.testAnyExpression();
 //		tester.testAnyExpression();
@@ -54,8 +55,11 @@ public class Main {
 //		tester.testOrExpression();
 //		tester.testXORExpression();
 //		tester.testAndExpression();
-		tester.testAsExpression();
-		tester.testGroupAsExpression();
+//		tester.testAsExpression();
+//		tester.testGroupAsExpression();
 	}
 
+	public static void FULL() throws Exception{
+		
+	}
 }
