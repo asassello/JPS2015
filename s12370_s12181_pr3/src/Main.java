@@ -41,8 +41,21 @@ public class Main {
 //		tester.testUniqueExpression();
 //		tester.testCountExpression();
 //		tester.testJoinExpression();
-		tester.testSelectExpression();
+//		tester.testSelectExpression();
 //		tester.testWhere2Expression();
+//		tester.testAnyExpression();
+//		tester.testAnyExpression();
+//		tester.testDivideExpression();
+//		tester.testMultiplyExpression();
+//		tester.testModuloExpression(); //nie ma
+//		tester.testGraterOrEqualThanExpression();
+//		tester.testGraterThanExpression();
+//		tester.testNotEqualExpression();
+//		tester.testOrExpression();
+//		tester.testXORExpression();
+//		tester.testAndExpression();
+		tester.testAsExpression();
+		tester.testGroupAsExpression();
 	}
 
 }

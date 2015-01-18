@@ -9,6 +9,7 @@ import edu.pjwstk.jps.ast.unary.IBagExpression;
 import datastore.SBAStore;
 import ast.terminal.*;
 import ast.unary.*;
+import ast.auxname.*;
 import ast.binary.*;
 import edu.pjwstk.jps.result.IAbstractQueryResult;
 import edu.pjwstk.jps.result.IBagResult;
@@ -382,4 +383,187 @@ public class EnvsTest {
 				);
 		System.out.println(res);
 	}
+
+	public void testAnyExpression() {
+		SBAStore store = new SBAStore(); 
+		store.loadXML(".\\data\\dane_do_zap_testowych.xml");
+		//System.out.println(store);
+		Interpreter interpreter = new Interpreter(store);
+		IAbstractQueryResult res = interpreter.eval(
+					new ForAnyExpression(new NameTerminal("emp"),
+							new EqualsExpression(new NameTerminal("fName"),
+									new StringTerminal("Anna")))
+				);
+		System.out.println(res);
+//		System.out.println(((BagResult)res).printBagOfReferenced(store));
+
+	}
+
+	public void testForAnyExpression() {
+		SBAStore store = new SBAStore(); 
+		store.loadXML(".\\data\\dane_do_zap_testowych.xml");
+		//System.out.println(store);
+		Interpreter interpreter = new Interpreter(store);
+		IAbstractQueryResult res = interpreter.eval(
+				new ForAllExpression(new NameTerminal("emp"),
+						new EqualsExpression(new NameTerminal("fName"),
+								new StringTerminal("Anna")))
+				);
+		System.out.println(res);
+//		System.out.println(((BagResult)res).printBagOfReferenced(store));
+
+	}
+
+	public void testDivideExpression() {
+		SBAStore store = new SBAStore(); 
+		store.loadXML(".\\data\\dane_do_zap_testowych.xml");
+		//System.out.println(store);
+		Interpreter interpreter = new Interpreter(store);
+		IAbstractQueryResult res = interpreter.eval(
+				new DivideExpression(
+						new IntegerTerminal(25), new DoubleTerminal(5.0))
+				);
+		System.out.println(res);
+//		System.out.println(((BagResult)res).printBagOfReferenced(store));
+
+	}
+	
+	public void testMultiplyExpression() {
+		SBAStore store = new SBAStore(); 
+		store.loadXML(".\\data\\dane_do_zap_testowych.xml");
+		//System.out.println(store);
+		Interpreter interpreter = new Interpreter(store);
+		IAbstractQueryResult res = interpreter.eval(
+				new MultiplyExpression(
+						new IntegerTerminal(3), new DoubleTerminal(5.0))
+				);
+		System.out.println(res);
+//		System.out.println(((BagResult)res).printBagOfReferenced(store));
+
+	}
+
+	public void testModuloExpression() {
+		SBAStore store = new SBAStore(); 
+		store.loadXML(".\\data\\dane_do_zap_testowych.xml");
+		//System.out.println(store);
+		Interpreter interpreter = new Interpreter(store);
+		IAbstractQueryResult res = interpreter.eval(
+				new ModuloExpression(
+						new IntegerTerminal(16), new DoubleTerminal(5.0))
+				);
+		System.out.println(res);
+//		System.out.println(((BagResult)res).printBagOfReferenced(store));
+
+	}
+	
+	public void testGraterOrEqualThanExpression() {
+		SBAStore store = new SBAStore(); 
+		store.loadXML(".\\data\\dane_do_zap_testowych.xml");
+		//System.out.println(store);
+		Interpreter interpreter = new Interpreter(store);
+		IAbstractQueryResult res = interpreter.eval(
+				new GreaterOrEqualThanExpression(new IntegerTerminal(5),
+						new DoubleTerminal(5.0))
+				);
+		System.out.println(res);
+//		System.out.println(((BagResult)res).printBagOfReferenced(store));
+
+	}
+	
+	public void testGraterThanExpression() {
+		SBAStore store = new SBAStore(); 
+		store.loadXML(".\\data\\dane_do_zap_testowych.xml");
+		//System.out.println(store);
+		Interpreter interpreter = new Interpreter(store);
+		IAbstractQueryResult res = interpreter.eval(
+				new GreaterThanExpression(new IntegerTerminal(5),
+						new DoubleTerminal(5.0))
+				);
+		System.out.println(res);
+//		System.out.println(((BagResult)res).printBagOfReferenced(store));
+
+	}
+
+	public void testNotEqualExpression() {
+		SBAStore store = new SBAStore(); 
+		store.loadXML(".\\data\\dane_do_zap_testowych.xml");
+		//System.out.println(store);
+		Interpreter interpreter = new Interpreter(store);
+		IAbstractQueryResult res = interpreter.eval(
+				new NotEqualsExpression(
+						new IntegerTerminal(5), new DoubleTerminal(5.1))
+				);
+		System.out.println(res);
+//		System.out.println(((BagResult)res).printBagOfReferenced(store));
+
+	}
+
+	public void testOrExpression() {
+		SBAStore store = new SBAStore(); 
+		store.loadXML(".\\data\\dane_do_zap_testowych.xml");
+		//System.out.println(store);
+		Interpreter interpreter = new Interpreter(store);
+		IAbstractQueryResult res = interpreter.eval(
+				new OrExpression(
+						new BooleanTerminal(true),new BooleanTerminal(false))
+				);
+		System.out.println(res);
+//		System.out.println(((BagResult)res).printBagOfReferenced(store));
+
+	}
+
+	public void testXORExpression() {
+		SBAStore store = new SBAStore(); 
+		store.loadXML(".\\data\\dane_do_zap_testowych.xml");
+		//System.out.println(store);
+		Interpreter interpreter = new Interpreter(store);
+		IAbstractQueryResult res = interpreter.eval(
+				new XORExpression(
+						new BooleanTerminal(true),new BooleanTerminal(false))
+				);
+		System.out.println(res);
+//		System.out.println(((BagResult)res).printBagOfReferenced(store));
+
+	}
+
+	public void testAndExpression() {
+		SBAStore store = new SBAStore(); 
+		store.loadXML(".\\data\\dane_do_zap_testowych.xml");
+		//System.out.println(store);
+		Interpreter interpreter = new Interpreter(store);
+		IAbstractQueryResult res = interpreter.eval(
+				new AndExpression(
+						new BooleanTerminal(true),new BooleanTerminal(true))
+				);
+		System.out.println(res);
+//		System.out.println(((BagResult)res).printBagOfReferenced(store));
+
+	}
+	
+	public void testAsExpression() {
+		SBAStore store = new SBAStore(); 
+		store.loadXML(".\\data\\dane_do_zap_testowych.xml");
+		//System.out.println(store);
+		Interpreter interpreter = new Interpreter(store);
+		IAbstractQueryResult res = interpreter.eval(
+				new AsExpression("123", new StringTerminal("HANIA"))
+				);
+		System.out.println(res);
+//		System.out.println(((BagResult)res).printBagOfReferenced(store));
+
+	}
+
+	public void testGroupAsExpression() {
+		SBAStore store = new SBAStore(); 
+		store.loadXML(".\\data\\dane_do_zap_testowych.xml");
+		//System.out.println(store);
+		Interpreter interpreter = new Interpreter(store);
+		IAbstractQueryResult res = interpreter.eval(
+				new GroupAsExpression("123", new IntegerTerminal(1))
+				);
+		System.out.println(res);
+//		System.out.println(((BagResult)res).printBagOfReferenced(store));
+
+	}
+	
 }
