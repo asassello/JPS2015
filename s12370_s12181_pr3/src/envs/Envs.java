@@ -71,7 +71,9 @@ public class Envs implements IENVS{
 		while( envsIter.hasNext() ){
 			Frame tmp = (Frame)envsIter.next();
 			if(tmp.checkFrameForBinder(name)) {
+				//System.out.println("TU");
 				bagOfBinders = (BagResult)tmp.returnBagOfBindersFromFrame(name);
+				//System.out.println(bagOfBinders);
 			}
 		}
 		return bagOfBinders;
@@ -103,8 +105,15 @@ public class Envs implements IENVS{
 		else if(result instanceof IBinderResult){
 			//System.out.println("test binder");
 			//jesli mamy binder odeslij taki sam binder
-			((Frame)newNestedFrame).frameElements.add(new Binder(((Binder)result).name,((Binder)result).value));
+			((Frame)newNestedFrame).frameElements.add(new Binder(((IBinderResult)result).getName(),((IBinderResult)result).getValue()));
+			//TU JEST CHYBA ZLE
 		}
+//		else if(result instanceof IBinderResult){
+//			//System.out.println("test binder");
+//			//jesli mamy binder odeslij taki sam binder
+//			((Frame)newNestedFrame).frameElements.add(new Binder(((Binder)result).name,((Binder)result).value));
+//		}
+		
 		else if(result instanceof IStructResult){
 			//System.out.println("test struct");
 			//dla struktury nested na kazdym elemencie, a nastepnie bindery ze zwroconej ramki dodajemy do docelowej ramki

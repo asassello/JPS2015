@@ -21,4 +21,5 @@ public class ReferenceResult extends SingleResult implements IReferenceResult {
 		this.refSBAObjectId = refSBAObjectId;
 	}
 
+	
 }

@@ -1,5 +1,14 @@
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+
+import parser.JpsParser;
 import datastore.SBAStore;
+import edu.pjwstk.jps.ast.IExpression;
+import edu.pjwstk.jps.result.IAbstractQueryResult;
 import envs.EnvsTest;
+import envs.Interpreter;
 
 public class Main {
 	
@@ -61,5 +70,36 @@ public class Main {
 
 	public static void FULL() throws Exception{
 		
+		SBAStore store = new SBAStore(); 
+		store.loadXML(".\\data\\dane_do_zap_testowych.xml");
+		//System.out.println(store);
+		Interpreter interpreter = new Interpreter(store);
+		
+        FileInputStream fstream = new FileInputStream(
+                ".\\res\\parser_test.txt");
+		DataInputStream in = new DataInputStream(fstream);
+		BufferedReader br = new BufferedReader(new InputStreamReader(in));
+		
+		String strLine;
+		int i = 1;
+		while ((strLine = br.readLine()) != null) {
+				
+				JpsParser parser = new JpsParser(strLine);
+		        parser.user_init();
+		        parser.parse();
+		
+		        IExpression expression = parser.RESULT;
+		        System.out.print( i + ": ");
+		        try {
+		                IAbstractQueryResult queryResult = interpreter.eval(expression);
+		                System.out.println(strLine + " [is:] " + queryResult.toString());                                        
+		
+		        } catch (Exception e) {
+		                System.out.println(e.getMessage());
+		                
+		        }
+		        i++;
+		}
+		in.close();
 	}
 }

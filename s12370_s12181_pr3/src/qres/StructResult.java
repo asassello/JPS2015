@@ -62,7 +62,8 @@ public class StructResult  extends SingleResult implements IStructResult, Compar
 		int result = 0; //jeœli równe
 		
 		for(int i = 1; i <((StructResult)o).elements().size(); i++){
-
+			
+			
 			result = ((SimpleObject)store.retrieve(((ReferenceResult)list.get(i)).getOIDValue())).compareTo(
 					(SimpleObject)(store.retrieve(((ReferenceResult)o.list.get(i)).getOIDValue())));
 			if(result != 0) //jeœli nierówne

@@ -108,6 +108,7 @@ public class BagResult extends CollectionResult implements IBagResult {
 		  
 		String tmp = "Bag:";
 		for(ISingleResult el: this.getElements()){
+			//System.out.println("TU");
 			tmp += (store.retrieve(((ReferenceResult)el).getOIDValue())).toString();
 		}
 		return tmp;

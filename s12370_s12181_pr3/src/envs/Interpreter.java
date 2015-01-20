@@ -83,6 +83,36 @@ public class Interpreter implements IInterpreter {
 		this.envs = null;
 	}
 	
+	
+	public IAbstractQueryResult parseBool(IAbstractQueryResult param){
+		
+		if (param instanceof IntegerResult && ((IntegerResult) param).getValue() == 1 ) {BooleanResult param_ = new BooleanResult(true); return param_;}
+		if (param instanceof IntegerResult && ((IntegerResult) param).getValue() == 0 ) {BooleanResult param_ = new BooleanResult(false); return param_;}
+		return param;
+	}
+	
+	public static Collection<ISingleResult> BagRemove (IAbstractQueryResult result)
+	{
+		if(result instanceof BagResult)
+			return ((BagResult) result).getElements();
+		else{
+			ArrayList<ISingleResult> tmp = new ArrayList<ISingleResult>();
+			tmp.add((ISingleResult) result);
+				return tmp;
+		}
+	}
+	
+	public static IAbstractQueryResult SingleBagRemove (IAbstractQueryResult result)
+	{
+		if(result instanceof BagResult){
+			if(((BagResult) result).getElements().size()==1)
+				return ((BagResult) result).getElements().iterator().next();
+			else
+				return result;
+		}
+		else return result;	
+	}
+	
 	public static Boolean checkIfNumber(IAbstractQueryResult result1){
 		Boolean tmp = null;
 		if(result1 instanceof ISimpleResult){
@@ -98,6 +128,20 @@ public class Interpreter implements IInterpreter {
 //		}
 		else throw new RuntimeException("Non NumberResults");
 		
+	}
+	
+	
+	public static ArrayList<ISingleResult> getListOfSingleResults (IAbstractQueryResult result){
+		ArrayList<ISingleResult> tmp = new ArrayList<ISingleResult>();
+		if(result instanceof SingleResult){
+			tmp.add((ISingleResult)result);
+		}
+		if(result instanceof IBagResult){
+			for (ISingleResult element: ((IBagResult)result).getElements()) {
+				tmp.add(element);
+			}
+		}
+		return tmp;
 	}
 	
 	public static ArrayList<ISingleResult> checkIfIterableResult(IAbstractQueryResult result){
@@ -128,25 +172,38 @@ public class Interpreter implements IInterpreter {
 		
 	}
 
-	//czy aby na pewno wartoœæ zwracana ISingleResult ?
+//	public static ISingleResult checkIfSingleResult(IAbstractQueryResult res){
+//		if(res instanceof IStructResult){
+//			if(((Integer)((IStructResult)res).elements().size()).equals(1)){
+//				return ((IStructResult)res).elements().get(0);
+//				//to jest Ÿle!!!
+//			}
+//			else throw new RuntimeException("Non SingleResult");	
+//		}
+//		else if(res instanceof IBagResult){
+//			if(((Integer)((IBagResult)res).getElements().size()).equals(1)){
+//				return ((IBagResult)res).getElements().iterator().next();
+//			}
+//			else throw new RuntimeException("Non SingleResult");
+//		}
+//		else if(res instanceof ISingleResult){
+//			return (ISingleResult) res;
+//		}
+//		//czy konieczne jest obs³u¿enie BinderResult przy sprawdzaniu czy obiekt wskazuje na pojedyncz¹ wartoœæ? 
+//		else throw new RuntimeException("Non SingleResult");		
+//	}
+	
 	public static ISingleResult checkIfSingleResult(IAbstractQueryResult res){
-		if(res instanceof IStructResult){
-			if(((Integer)((IStructResult)res).elements().size()).equals(1)){
-				return ((IStructResult)res).elements().get(0);
+		if(res instanceof ISingleResult){
+				return (ISingleResult)res;
 			}
-			else throw new RuntimeException("Non SingleResult");	
-		}
 		else if(res instanceof IBagResult){
 			if(((Integer)((IBagResult)res).getElements().size()).equals(1)){
 				return ((IBagResult)res).getElements().iterator().next();
 			}
-			else throw new RuntimeException("Non SingleResult");
 		}
-		else if(res instanceof ISingleResult){
-			return (ISingleResult) res;
-		}
-		//czy konieczne jest obs³u¿enie BinderResult przy sprawdzaniu czy obiekt wskazuje na pojedyncz¹ wartoœæ? 
-		else throw new RuntimeException("Non SingleResult");		
+		throw new RuntimeException("Non SingleResult");	
+		
 	}
 	
 	public static IAbstractQueryResult checkIfReferenceResult(IAbstractQueryResult res, SBAStore store){
@@ -171,14 +228,16 @@ public class Interpreter implements IInterpreter {
 			else throw new RuntimeException("Reference to complex object");
 		}
 		else if (res instanceof IBinderResult){
-			return ((IBinderResult)res).getValue();
+			return checkIfReferenceResult(((IBinderResult)res).getValue(),store);
 		}
 		else if (res instanceof IBagResult){
-			if(((Integer)((IBagResult)res).getElements().size()).equals(1)){
+			//if(((Integer)((IBagResult)res).getElements().size()).equals(1)){
 				if( ((IBagResult)res).getElements().iterator().next() instanceof ReferenceResult){
+					//System.out.println("TU");
+					//System.out.println(((IBagResult)res).getElements().iterator().next().getClass());
 					return checkIfReferenceResult(((IBagResult)res).getElements().iterator().next(),store);
+				//}
 				}
-			}
 		}
 		return res;
 	}
@@ -189,17 +248,26 @@ public class Interpreter implements IInterpreter {
 		ArrayList<ISingleResult> res  = new ArrayList<ISingleResult>();
 		expr.getInnerExpression().accept(this);
 		IAbstractQueryResult inner = this.qres.pop();
-		for(IAbstractQueryResult el: this.checkIfIterableResult(inner)){			
-				res.add(new BinderResult(expr.getAuxiliaryName(), (AbstractQueryResult) el) );			
+		Collection<ISingleResult> tmp = this.BagRemove(inner);
+		
+		for(ISingleResult el: tmp){	
+			
+				res.add(new BinderResult(expr.getAuxiliaryName(), (AbstractQueryResult) el) );		
+				
 		}
-		qres.push(new BagResult(res));
+		qres.push(new BagResult((Collection<ISingleResult>)res));
+		//System.out.println(res);
 	}
+	
 
 	@Override
 	public void visitGroupAsExpression(IGroupAsExpression expr) {
 		// TODO Auto-generated method stub
 		expr.getInnerExpression().accept(this);
 		IAbstractQueryResult inner = this.qres.pop();
+		
+		//System.out.println(this.checkIfReferenceResult(inner, (SBAStore) store));
+		
 		qres.push(new BinderResult(expr.getAuxiliaryName(), (AbstractQueryResult) inner) );			
 	}
 
@@ -212,7 +280,11 @@ public class Interpreter implements IInterpreter {
 			this.envs.push(this.envs.nested(el, this.store));
 			expr.getRightExpression().accept(this);
 			IAbstractQueryResult right = this.qres.pop();
-			if(!(right instanceof BooleanResult)) throw new RuntimeException("Non boolean value /ForAllExpression"); 
+			//System.out.println(right);
+			right =  this.checkIfReferenceResult(right, (SBAStore) store); 
+			//System.out.println(right);
+			
+			if(!(right instanceof BooleanResult)) throw new RuntimeException("Non boolean value /AllExpression"); 
 			if(((BooleanResult)right).getValue().equals(false)){
 				qres.push(new BooleanResult(false));
 				this.envs.pop();
@@ -230,14 +302,17 @@ public class Interpreter implements IInterpreter {
 		expr.getRightExpression().accept(this);
 		IAbstractQueryResult right = this.qres.pop();
 		IAbstractQueryResult left = this.qres.pop();
-		try { 
+		//try { 
 			right = this.checkIfSingleResult(right);
 			left = this.checkIfSingleResult(left);
-		} catch (Exception e) { System.out.println("AndExpression: Non single result"); }
+		//} catch (Exception e) { System.out.println("AndExpression: Non single result"); }
 		right = this.checkIfReferenceResult(right, (SBAStore) store);
 		left = this.checkIfReferenceResult(left, (SBAStore) store);
 		
-		if (left instanceof IBooleanResult && right instanceof IBooleanResult ) //dwa bool
+		//System.out.println(left);
+		//System.out.println(right);
+				
+		if (parseBool(left) instanceof IBooleanResult && parseBool(right) instanceof IBooleanResult ) //dwa bool
 			qres.push ( new BooleanResult( ((BooleanResult)left).getValue() && ((BooleanResult)right).getValue()) );
 		else throw new RuntimeException("AndExpression: InvalidArguments");
 	}
@@ -251,8 +326,9 @@ public class Interpreter implements IInterpreter {
 			this.envs.push(this.envs.nested(el, this.store));
 			expr.getRightExpression().accept(this);
 			IAbstractQueryResult right = this.qres.pop();
-			if(!(right instanceof BooleanResult)) throw new RuntimeException("Non boolean value /ForAnyExpression"); 
-			if(((BooleanResult)right).getValue().equals(true)){
+			IAbstractQueryResult right_ = this.checkIfReferenceResult(right, (SBAStore) store);
+			if(!(parseBool(right_) instanceof BooleanResult)) throw new RuntimeException("Non boolean value /ForAnyExpression"); 
+			if(((BooleanResult)right_).getValue().equals(true)){
 				qres.push(new BooleanResult(true));
 				this.envs.pop();
 				return;
@@ -277,15 +353,24 @@ public class Interpreter implements IInterpreter {
 		IAbstractQueryResult e2res = this.qres.pop();
 		IAbstractQueryResult e1res = this.qres.pop();
 		
-		for(IAbstractQueryResult e1: this.checkIfIterableResult(e1res)){
-			for(IAbstractQueryResult e2: this.checkIfIterableResult(e2res)){
+		//System.out.println("TU");
+		//System.out.println(e2res);
+		//System.out.println(e1res);
+		
+		for(IAbstractQueryResult e1: this.getListOfSingleResults(e1res)){
+			for(IAbstractQueryResult e2: this.getListOfSingleResults(e2res)){
 				StructResult structEl = new StructResult();
+				//System.out.println(e1);
+				//System.out.println(e2);
 				structEl.addElements(this.checkIfIterableResult(e1));
 				structEl.addElements(this.checkIfIterableResult(e2));
+//				structEl.addElements(this.checkIfIterableResult(e1));
+//				structEl.addElements(this.checkIfIterableResult(e2));
+				//System.out.println(structEl);
 				eres.addElements(structEl);
 			}
 		}		
-		qres.push(eres);
+		qres.push(SingleBagRemove(eres));
 	}
 
 	@Override
@@ -320,15 +405,18 @@ public class Interpreter implements IInterpreter {
 		BagResult eres = new BagResult(); //nowy bag na wynik
 		expr.getLeftExpression().accept(this); //lewe podzapytanie
 		IAbstractQueryResult left = this.qres.pop();	
-		for(IAbstractQueryResult el: this.checkIfIterableResult(left)){
+		
+		
+		for(IAbstractQueryResult el: this.getListOfSingleResults(left)){
+			//System.out.println(el);
 			this.envs.push(this.envs.nested(el, this.store));
 			expr.getRightExpression().accept(this);
 			IAbstractQueryResult right = this.qres.pop();
 			//System.out.println(right);
-			eres.addElements(right); //funkcja przeci¹¿ona
+			eres.addElements(SingleBagRemove(right)); //funkcja przeci¹¿ona
 			this.envs.pop();
 		}		
-		qres.push(eres);
+		qres.push(SingleBagRemove(eres));
 	}
 	
 	@Override
@@ -356,7 +444,7 @@ public class Interpreter implements IInterpreter {
 			this.envs.pop();
 		}	
 //		System.out.println(wheres);
-		qres.push(wheres);
+		qres.push(SingleBagRemove(wheres));
 		
 	}
 
@@ -367,6 +455,9 @@ public class Interpreter implements IInterpreter {
 		expr.getRightExpression().accept(this);
 		IAbstractQueryResult right = this.qres.pop();
 		IAbstractQueryResult left = this.qres.pop();
+		
+		//System.out.println(left.getClass());
+		
 		try { 
 			right = this.checkIfSingleResult(right);
 			left = this.checkIfSingleResult(left);
@@ -374,14 +465,20 @@ public class Interpreter implements IInterpreter {
 		right = this.checkIfReferenceResult(right, (SBAStore) store);
 		left = this.checkIfReferenceResult(left, (SBAStore) store);
 		
+		//System.out.println(left.getClass());
+		
 		if(left instanceof IStringResult || right instanceof IStringResult ) //jeden string
+			{
+			if(parseBool(left) instanceof IBooleanResult || parseBool(right) instanceof IBooleanResult ) qres.push( new BooleanResult(true) ); 
+			else
 			qres.push( new BooleanResult( ((ISimpleResult)left).getValue().toString().equals(((ISimpleResult)right).getValue().toString()) ) );
+		}
 		else if (left instanceof IDoubleResult || right instanceof IDoubleResult ) //przynajmniej jeden double
 			qres.push( new BooleanResult( ((Number)((ISimpleResult)left).getValue()).doubleValue() == ((Number)((ISimpleResult)right).getValue()).doubleValue() ) );
 		else if (left instanceof IIntegerResult && right instanceof IIntegerResult ) //dwa int
 			qres.push ( new BooleanResult( ((IntegerResult)left).getValue() == ((IntegerResult)right).getValue()) );
-		else if (left instanceof IIntegerResult && right instanceof IIntegerResult ) //dwa bool
-			qres.push ( new BooleanResult( ((BooleanResult)left).getValue() == ((BooleanResult)right).getValue()) );
+		else if (parseBool(left) instanceof IBooleanResult && parseBool(right) instanceof IBooleanResult ) //dwa bool
+			qres.push ( new BooleanResult( ((BooleanResult)parseBool(left)).getValue() == ((BooleanResult)parseBool(right)).getValue()) );
 		else throw new RuntimeException("EqualsExpression: InvalidArguments");
 	}
 
@@ -453,15 +550,37 @@ public class Interpreter implements IInterpreter {
 		expr.getLeftExpression().accept(this);
 		expr.getRightExpression().accept(this);
 			
-		eres2.addElements(this.checkIfIterableResult(this.qres.pop()));
-		eres1.addElements(this.checkIfIterableResult(this.qres.pop()));
+		ArrayList<ISingleResult> right = (this.getListOfSingleResults(this.qres.pop()));
+		ArrayList<ISingleResult> left = (this.getListOfSingleResults(this.qres.pop()));
 		
-		for(ISingleResult eres1El: this.checkIfIterableResult(eres1)){
-			if((eres2.getElements().contains(eres1El))){
-				eres.addElements(eres1El);
+//		System.out.println(eres);
+//		System.out.println(right);
+//		System.out.println(left);
+				
+		for(ISingleResult eres1El: left){
+			for(ISingleResult eres2El: right){
+				Boolean fla = false;
+				if(eres1El instanceof ISimpleResult && eres2El instanceof ISimpleResult ){
+					if(((ISimpleResult)eres1El).getValue().equals(((ISimpleResult)eres2El).getValue()))
+					{
+						fla = true;
+					}
+				}
+				else if(eres1El instanceof IStructResult && eres2El instanceof IStructResult && 
+						(((IStructResult)eres1El).elements().size()==((IStructResult)eres2El).elements().size()) ){
+						Boolean fla2 = true;
+						for(int i=0;i<((IStructResult)eres1El).elements().size();i++)
+							if ( !(((ISimpleResult)((IStructResult)eres1El).elements().get(i)).getValue().equals(((ISimpleResult)((IStructResult)eres2El).elements().get(i)).getValue())) )
+							{
+								fla2 = false;
+							}
+						fla=fla2;
+				}					
+				if(fla) eres.addElements(eres1El);
+				//System.out.println(eres);
 			}
 		}
-		qres.push(eres);
+		qres.push((eres));
 	}
 
 	@Override
@@ -483,7 +602,7 @@ public class Interpreter implements IInterpreter {
 			}
 			this.envs.pop();
 		}		
-		qres.push(eres);
+		qres.push(SingleBagRemove(eres));
 	}
 
 	@Override
@@ -558,15 +677,18 @@ public class Interpreter implements IInterpreter {
 		expr.getLeftExpression().accept(this);
 		expr.getRightExpression().accept(this);
 			
-		eres2.addElements(this.checkIfIterableResult(this.qres.pop()));
-		eres1.addElements(this.checkIfIterableResult(this.qres.pop()));
+//		eres2.addElements(this.checkIfIterableResult(this.qres.pop()));
+//		eres1.addElements(this.checkIfIterableResult(this.qres.pop()));
 		
-		for(ISingleResult eres1El: this.checkIfIterableResult(eres1)){
+		eres2.addElements(this.getListOfSingleResults(this.qres.pop()));
+		eres1.addElements(this.getListOfSingleResults(this.qres.pop()));
+		
+		for(ISingleResult eres1El: this.getListOfSingleResults(eres1)){
 			if(!(eres2.getElements().contains(eres1El))){
 				eres.addElements(eres1El);
 			}
 		}
-		qres.push(eres);
+		qres.push(SingleBagRemove(eres));
 	}
 
 	@Override
@@ -616,7 +738,7 @@ public class Interpreter implements IInterpreter {
 			qres.push( new BooleanResult( ((Number)((ISimpleResult)left).getValue()).doubleValue() != ((Number)((ISimpleResult)right).getValue()).doubleValue() ) );
 		else if (left instanceof IIntegerResult && right instanceof IIntegerResult ) //dwa int
 			qres.push ( new BooleanResult( ((IntegerResult)left).getValue() != ((IntegerResult)right).getValue()) );
-		else if (left instanceof IBooleanResult && right instanceof IBooleanResult ) //dwa bool
+		else if (parseBool(left) instanceof IBooleanResult && parseBool(right) instanceof IBooleanResult ) //dwa bool
 			qres.push ( new BooleanResult( ((BooleanResult)left).getValue() != ((BooleanResult)right).getValue()) );
 		else throw new RuntimeException("NotEqualsExpression: InvalidArguments");
 	}
@@ -660,7 +782,7 @@ public class Interpreter implements IInterpreter {
 		for (StructResult element: arrayOfStructsForSort) {
 			eres_order_by.addElements(element.getElement(0));
 		}
-		qres.push(eres_order_by); 
+		qres.push(SingleBagRemove(eres_order_by)); 
 	}
 
 	@Override
@@ -677,7 +799,7 @@ public class Interpreter implements IInterpreter {
 		right = this.checkIfReferenceResult(right, (SBAStore) store);
 		left = this.checkIfReferenceResult(left, (SBAStore) store);
 		
-		if (left instanceof IBooleanResult && right instanceof IBooleanResult ) //dwa bool
+		if (parseBool(left) instanceof IBooleanResult && parseBool(right) instanceof IBooleanResult ) //dwa bool
 			qres.push ( new BooleanResult( ((BooleanResult)left).getValue() || ((BooleanResult)right).getValue()) );
 		else throw new RuntimeException("OrExpression: InvalidArguments");
 	}
@@ -713,10 +835,10 @@ public class Interpreter implements IInterpreter {
 		expr.getLeftExpression().accept(this);
 		expr.getRightExpression().accept(this);
 			
-		eres.addElements(this.checkIfIterableResult(this.qres.pop()));
-		eres.addElements(this.checkIfIterableResult(this.qres.pop()));
+		eres.addElements(this.getListOfSingleResults(this.qres.pop()));
+		eres.addElements(this.getListOfSingleResults(this.qres.pop()));
 
-		qres.push(eres);
+		qres.push(SingleBagRemove(eres));
 	}
 
 	@Override
@@ -733,8 +855,8 @@ public class Interpreter implements IInterpreter {
 		right = this.checkIfReferenceResult(right, (SBAStore) store);
 		left = this.checkIfReferenceResult(left, (SBAStore) store);
 		
-		if (left instanceof IBooleanResult && right instanceof IBooleanResult ) //dwa bool
-			qres.push ( new BooleanResult( ((BooleanResult)left).getValue() != ((BooleanResult)right).getValue()) );
+		if (parseBool(left) instanceof IBooleanResult && parseBool(right) instanceof IBooleanResult ) //dwa bool
+			qres.push ( new BooleanResult( (! ((BooleanResult)left).getValue() == ((BooleanResult)right).getValue() )) );
 		else throw new RuntimeException("XORExpression: InvalidArguments");
 	}
 
@@ -778,9 +900,13 @@ public class Interpreter implements IInterpreter {
 		BagResult eres = new BagResult(); //nowy bag na wynik
 		expr.getInnerExpression().accept(this);
 		IAbstractQueryResult inner = this.qres.pop();
-		for(IAbstractQueryResult el: this.checkIfIterableResult(inner)){
+		//System.out.println(inner);
+		
+		for(ISingleResult el: this.checkIfIterableResult(inner)){
 			eres.addElements(el);
-		}		
+		}
+		//System.out.println(eres);
+		//eres = (BagResult) convertBagOfSingle(eres);
 		qres.push(eres);
 	}
 
@@ -788,7 +914,7 @@ public class Interpreter implements IInterpreter {
 	public void visitCountExpression(ICountExpression expr) {
 		// TODO Auto-generated method stub
 		expr.getInnerExpression().accept(this);
-		qres.push( new IntegerResult (this.checkIfIterableResult(this.qres.pop()).size() ));
+		qres.push( new IntegerResult (this.getListOfSingleResults(this.qres.pop()).size() ));
 	}
 
 	@Override
@@ -849,7 +975,7 @@ public class Interpreter implements IInterpreter {
 				} catch (Exception e) { System.out.println("NotExpression: Non single result");  }
 				inner = this.checkIfReferenceResult(inner, (SBAStore) store);
 			
-				if(inner instanceof IBooleanResult) 
+				if(parseBool(inner) instanceof IBooleanResult) 
 					qres.push( new BooleanResult( !(((IBooleanResult)inner).getValue()) ) );
 				else throw new RuntimeException("NotExpression: InvalidArguments");
 	}
@@ -860,10 +986,11 @@ public class Interpreter implements IInterpreter {
 		BagResult eres = new BagResult(); //nowy bag na wynik
 		expr.getInnerExpression().accept(this);
 		IAbstractQueryResult inner = this.qres.pop();
+		//System.out.println(inner);
 		for(IAbstractQueryResult el: this.checkIfIterableResult(inner)){
 			eres.addElements(el);
 		}		
-		qres.push(eres);
+		qres.push(SingleBagRemove(eres));
 	}
 
 	@Override
@@ -894,17 +1021,20 @@ public class Interpreter implements IInterpreter {
 	public void visitUniqueExpression(IUniqueExpression expr) {
 		// TODO Auto-generated method stub
 		BagResult eres = new BagResult(); //nowy bag na wynik
-		ArrayList<ISingleResult> list = new ArrayList<ISingleResult>(); //struktura na tymczasowe wartoœci
 		expr.getInnerExpression().accept(this);
 		IAbstractQueryResult inner = this.qres.pop();
 		
-//		System.out.println(inner);
-		for(ISingleResult eresInner: this.checkIfIterableResult(inner)){
-			if(!(list.contains(eresInner))){
-				list.add(eresInner);
+		ArrayList<ISingleResult> inner_ = this.getListOfSingleResults(inner);
+		ArrayList<ISingleResult> resList = new ArrayList<ISingleResult>();
+				
+		for (ISingleResult el : inner_) {
+			Boolean flag = true;
+			for(int i=0;i<resList.size();i++){
+				if(((ISingleResult)(resList.get(i))).equals(el)) flag = false;
 			}
+			if(flag)resList.add(el);
 		}
-		eres.addElements(list);
+		eres.addElements(resList);
 		qres.push(eres);
 	}
 

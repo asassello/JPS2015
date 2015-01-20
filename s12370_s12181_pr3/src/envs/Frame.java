@@ -50,13 +50,16 @@ public class Frame implements IENVSFrame {
 		}
 		return flag;
 	}
+	
+	
 
 	public IBagResult returnBagOfBindersFromFrame(String pattern){
 		
 		BagResult tmp = new BagResult();
 		for(IENVSBinder singleBinder: this.frameElements){
 			if(singleBinder.getName().equals(pattern)){
-				tmp.getElements().add( (ReferenceResult) singleBinder.getValue() );
+				//System.out.println("TU");
+				tmp.getElements().add( (ISingleResult) singleBinder.getValue() );
 			}
 		}
 		return tmp;
